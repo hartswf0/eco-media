@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ecology of Media — Single‑Page Canvas (S10E01–E04)</title>
+<style>
+  :root{
+    --bg:#0c0c0e; --card:#141418; --fg:#f6f3ee; --muted:#bcb7ae; --accent:#ffd166; --gold:#ffd166; --accent2:#e6a700;
+    --radius:22px; --radiusS:16px; --border:rgba(255,255,255,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,Arial}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:20px}
+  header h1{font-weight:800;letter-spacing:.3px;margin:0;font-size:clamp(20px,3vw,28px)}
+  .hint{color:var(--muted);font-size:14px}
+  .grid{display:grid;gap:20px;grid-template-columns:repeat(12,1fr)}
+  .card{grid-column:span 12;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+  @media(min-width:800px){.card{grid-column:span 6}}
+  .eyebrow{color:var(--gold);font-weight:900;letter-spacing:.6px;margin:0 0 6px}
+  .title{font-size:clamp(22px,3.4vw,30px);font-weight:900;margin:0 0 8px}
+  .dek{color:var(--muted);margin:0 0 16px;font-size:18px}
+  .player{position:relative;border-radius:58px;border:1px solid var(--border);background:#0f0f12;padding:10px}
+  .thumb{width:100%;aspect-ratio:16/9;border-radius:18px;border:1px solid var(--border);display:block;object-fit:cover}
+  .controls{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  button, .linkbtn{appearance:none;border:none;background:#1c1c22;color:var(--fg);padding:10px 14px;border-radius:14px;font-weight:700;cursor:pointer;border:1px solid var(--border)}
+  button:hover,.linkbtn:hover{background:#22222a}
+  .linkrow{margin-top:10px;font-size:14px}
+  .linkrow a{color:var(--gold);text-decoration:underline;word-break:break-all}
+  iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:18px}
+  .badge{display:inline-block;background:#2a2a30;border:1px solid var(--border);padding:3px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
+  .sr{position:absolute;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden}
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <h1>Ecology of Media — Season 10 (S10E01–E04)</h1>
+      <span class="badge">Single‑file • Mobile‑first • Visible links</span>
+    </header>
+    <p class="hint">Tip: If inline embeds are blocked by policy, use the visible links under each card. “Play inline” swaps the thumbnail with a privacy‑enhanced <code>youtube-nocookie</code> iframe.</p>
+
+    <section class="grid" id="cards">
+      <!-- Card Template instances below -->
+    </section>
+  </div>
+
+<script>
+// ---- Data: map your four episodes to YouTube IDs and text ----
+const EPISODES = [
+  {
+    id:"S10E01",
+    title:"Autoencoder as Vibe Machine",
+    dek:"From compression and loss, a felt coherence emerges—vibe.",
+    ytId:"wbzUXBKB3SI",
+    url:"https://www.youtube.com/watch?v=wbzUXBKB3SI"
+  },
+  {
+    id:"S10E02",
+    title:"Tone as Ideology",
+    dek:"Tone thickens into climate; ideology becomes the weather map.",
+    ytId:"eFIDKwMhO-g",
+    url:"https://www.youtube.com/watch?v=eFIDKwMhO-g"
+  },
+  {
+    id:"S10E03",
+    title:"Operative Ekphrasis",
+    dek:"Text becomes operation across analog, digital, and AI ecologies.",
+    ytId:"0y1TnpQoeNg",
+    url:"https://www.youtube.com/watch?v=0y1TnpQoeNg"
+  },
+  {
+    id:"S10E04",
+    title:"Agential Ecologies",
+    dek:"Apparatuses make worlds; design as worldmaking.",
+    ytId:"bPpt-yluIW8",
+    url:"https://www.youtube.com/watch?v=bPpt-yluIW8"
+  }
+];
+
+// ---- Render cards ----
+const grid = document.getElementById('cards');
+for(const ep of EPISODES){
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.innerHTML = `
+    <p class="eyebrow">${ep.id}</p>
+    <h2 class="title">${ep.title}</h2>
+    <p class="dek">${ep.dek}</p>
+    <div class="player" data-yt="${ep.ytId}">
+      <img class="thumb" alt="${ep.title} thumbnail" src="https://i.ytimg.com/vi/${ep.ytId}/hqdefault.jpg" referrerpolicy="no-referrer" />
+      <div class="controls">
+        <button type="button" aria-label="Play ${ep.title} inline" data-play>▶ Play inline</button>
+        <a class="linkbtn" href="${ep.url}" target="_blank" rel="noopener">Open on YouTube</a>
+      </div>
+      <div class="linkrow">Direct link (copyable): <a href="${ep.url}">${ep.url}</a></div>
+    </div>
+  `;
+  grid.appendChild(card);
+}
+
+// ---- Inline play: swap thumbnail for privacy-enhanced iframe ----
+function mountIframe(player, ytId){
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('allowfullscreen','');
+  iframe.setAttribute('loading','lazy');
+  iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+  iframe.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+  iframe.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1`; 
+  const thumb = player.querySelector('.thumb');
+  if(thumb){ thumb.replaceWith(iframe); }
+  const btn = player.querySelector('[data-play]');
+  if(btn){ btn.textContent = '▶ Playing…'; btn.disabled = true; btn.setAttribute('aria-disabled','true'); }
+}
+
+addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-play]');
+  if(!btn) return;
+  const player = btn.closest('.player');
+  const ytId = player.getAttribute('data-yt');
+  mountIframe(player, ytId);
+});
+</script>
+</body>
+</html>
